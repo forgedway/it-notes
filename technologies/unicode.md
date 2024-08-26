@@ -25,7 +25,7 @@ Additionally:
 symbols and precomposed characters.
 - To check if Unicode strings are visually similar the standard provides
 `confusables.txt` and `confusablesSummary.txt`
-- The coded character set can be seen by
+- The coded character set can be seen by the
 [gucharmap](https://en.wikipedia.org/wiki/GNOME_Character_Map) application.
 - To convert or normalize Unicode strings in bash `uconv` utility might be used.
 
@@ -34,7 +34,7 @@ symbols and precomposed characters.
 the `ISO/IEC 10646`. Originally, it was an unrelated standard to Unicode, but in
 1990 it was unified with Unicode.
 
-The UCS standard also have two fixed-length encodings: `UCS-2` and `UCS-4`.
+The UCS standard also has two fixed-length encodings: `UCS-2` and `UCS-4`.
 These encodings are considered outdated and have been superseded by `UTF-16`
 and `UTF-32` respectively.
 
@@ -53,7 +53,7 @@ Topic                                               | UTF-8   | UCS-2 | UTF-16  
 :--                                                 | :--:    | :--:  | :--:    | :--:
 Byte length per code point                          | 1 - 4   | 2     | 2 or 4  | 4
 Can access to Nth character by its index            | -       | +     | -       | +
-Endiant independent (doesn't use BOM)               | +       | -     | -       | -
+Endian independent (doesn't use BOM)                | +       | -     | -       | -
 Can represent code points after 65536 (over U+FFFF) | +       | -     | +       | +
 Backward campatible with                            | `ASCII` | -     | `UCS-2` | -
 
@@ -90,8 +90,8 @@ FF FE 00 00 | `UTF-32`, `Little-endian`
 
 > `UTF-8` with `BOM` marker can be also called as `utf-8-sig`.
 
-> The standard doesn't recomend using a `BOM` with `UTF-8` due to compatibility
-issues with `ASCII`.
+> The standard doesn't recommend using a `BOM` with `UTF-8` due to
+> compatibility issues with `ASCII`.
 
 ## Character properties
 Each character has a set of properties, some of them are:
@@ -134,9 +134,11 @@ Unicode has 4 forms and algorithms respectively:
 - **NFC (Normalization Form Canonical Composition):**
   - Recomposes by canonical equivalence.
 - **NFKD (Normalization Form Compatibility Decomposition):**
-  - Same as **NFD**, but also replaces characters by meaning.
+  - Same as **NFD**, but also replaces characters with their compatibility
+    equivalents (by meaning).
 - **NFKC (Normalization Form Compatibility Composition):**
-  - Same as **NFKC**, but also replaces characters by meaning.
+  - Same as **NFKC**, but also replaces characters with their compatibility
+    equivalents (by meaning).
 
 **Composition / Decomposition** is needed for string comparison. Meanwhile, the
 **Compatibility** form is crucial for such things as search by a string (e.g. by
