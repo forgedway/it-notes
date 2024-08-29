@@ -298,8 +298,14 @@ Code point | Character | `UTF-32BE` representation
   encoding for Japanese websites after `UTF-8`.
 
 ## Obsolete encodings
-- **KOI-8** is an 8-bit extension of `ASCII`. It included 32 lowercase and 31
-  uppercase Russian letters.
+- **KOI-8** is an 8-bit extension of `ASCII`. It includes 32 lowercase and 31
+  uppercase Russian letters. The name `KOI-8` is refers to a family of
+  extensions of the `KOI-8` encoding. Some of the family members are:
+  - `KOI8-R` - most popular among other `KOI-8` encodings.
+  - `KOI8-B` - for Bulgarian.
+  - `KOI8-U` - for Ukrainian.
+  - `KOI8-T` - for Tajik Cyrillic.
+  - ...
 
 - **Big5** is a Chinese character encoding used in Taiwan, Hong Kong, and Macau
   for traditional Chinese characters. The original `Big5` character set is
