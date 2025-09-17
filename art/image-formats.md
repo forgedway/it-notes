@@ -65,11 +65,30 @@ to these:
   - `y' = y ^ (1/2.2)` - to encode brightness
   - `y = y' ^ 2.2` - to decode brightness
 
+- **Embedded ICC profile:**  
+An embedded ICC profile is a data file that might be embedded into an image
+file to define a colorspace (base colors, a gammut and brightness
+representation). It's used only with `SDR`. It contains mathematical functions
+that are used to convert from raw data into absolute color values (`CIE XYZ`).
+There are some examples of work of profiles:
+  - Convert raw `RGB` data -> `sRGB` colorspace
+  - Convert raw `RGB` data -> `Adobe RGB` colorspace
+  - Convert raw `Grayscale` data -> `Gray Gamma 2.2` colorspace
+
 - **HDR:**  
 `HDR` (High Dynamic Range) is a modern technique to store brightness in files.
 It uses complex functions to encode and decode brightness that consist of
 different pieces. In modern days, the device or monitor should support HDR to
 be able to display it.
+
+- **HDR support:**  
+`HDR` doesn't use `ICC` profiles. It uses `CICP` metadata that defines three
+things: colorspace identifier, `EOTF` function for absolute brightness
+deriviation and a colorspace specific translation matrix. The whole process of
+the data transformation looks like this:
+  - `YCbCr` (internal stored data) -> `RGB` (decompression)
+  - `RGB` -> `RGB` (based on the `EOTF` function to get linear brightness)
+  - `RGB` -> `CIE XYZ` (based on colorspace specific translation matrix)
 
 # Legacy raster formats
 The formats in this section are a bit outdated and aren't recommended for use
