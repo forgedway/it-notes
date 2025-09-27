@@ -200,6 +200,16 @@ Similarities:
 comparable with `ProRes` and `DNxHR`, it hasn't gained such good support in
 the industry.
 
+#### `FFV1` (2003)
+`FFV1` is a lossless, free and opensource codec, developed by `FFmpeg
+project`. It's suitable for video editing and archiving. The only drawback is
+it doesn't usually have hardware acceleration.
+- ✅ **Quality:** Lossless;
+- ✅ **Compression ratio:** Superior to `ProRes`;
+- ✅ **Licensing:** Free and opensource;
+- ✅ **Software support:** Strong;
+- ❌ **Hardware support:** Doesn't have;
+
 # Containers (Formats)
 All mainstream containers are open and royalty-free.
 
