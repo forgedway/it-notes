@@ -39,8 +39,11 @@ done
 To reset `IFS` in a portable way:
 ```sh
 IFS="$(printf " \t\n"; printf x)"; IFS=${IFS%x}
+# or
+IFS="$(printf ' \t')
+"
 
-# Alternatives (don't work):
+# Alternatives (won't work):
 
 # Doesn't work in dash.
 IFS=$' \t\n'
@@ -99,7 +102,7 @@ cat <&3
 printf "abc\n" >&3
 
 # Checks if open
-if { : >&3; } 2> /dev/null; then
+if (: >&3) 2> /dev/null; then
   # Open
 else
   # Closed
@@ -156,7 +159,7 @@ It's a cool thing to do nothing like `true`. It can be used for variable substit
 : a b c
 
 # If VAR isn't set, it will be set to "some data here".
-: ${VAR=:some data here}
+: ${VAR:=some data here}
 ```
 
 
@@ -195,7 +198,7 @@ wait
 
 ## ARRAYS
 Arrays aren't POSIX compliant. They don't work with `dash`!!! `bash` and
-`zsh` use different initial indices (1 and 0 respectively). `bash` and `zsh`
+`zsh` use different initial indices (0 and 1 respectively). `bash` and `zsh`
 don't agree on the `+=` operator either. I wouldn't recommend to use it.
 
 ```sh
@@ -205,8 +208,8 @@ my_array=(a "bbbbb bbbb" ccc)
 # Access to all elements.
 : "${my_array[@]}"
 
-# bash: Gets the first element.
-# zsh: Gets the second element.
+# bash: Gets the second element.
+# zsh: Gets the first element.
 : "${my_array[1]}"
 
 # Gets last element.
@@ -224,7 +227,7 @@ done
 my_array[3]="ddd"
 
 # bash: Appends data to the first element.
-# zsh: Appends an element to the end.
+# zsh: Appends an element to the end of the array.
 my_array+="eee"
 
 # Appends an array.
