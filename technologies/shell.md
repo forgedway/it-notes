@@ -113,6 +113,7 @@ doesn't work with `dash`!!!
 exec {data_fd}<> data.txt
 ```
 
+
 ## HEREDOC
 ```sh
 
@@ -138,12 +139,14 @@ some $DATA here
 EOF
 ```
 
+
 ## HERESTRING
 It ISN'T POSIX. It doesn't work with `dash`!!!
 ```sh
 cat <<< "some data here"
 cat <<< $(printf "some data here")
 ```
+
 
 ## `:`
 It's a cool thing to do nothing like `true`. It can be used for variable substitution.
@@ -155,6 +158,7 @@ It's a cool thing to do nothing like `true`. It can be used for variable substit
 # If VAR isn't set, it will be set to "some data here".
 : ${VAR=:some data here}
 ```
+
 
 ## SUBSHELLS AND GROUP COMMANDS
 ```sh
@@ -169,6 +173,7 @@ It's a cool thing to do nothing like `true`. It can be used for variable substit
 #   - A semicolon before `}` (if the last command and `}` at the same line).
 { command1 | command2; }
 ```
+
 
 ## SUBPROCESSES HANDLING
 To kill all subprocesses we should kill the group pid. This is the portable way to do so.
@@ -186,6 +191,7 @@ process3 &
 
 wait
 ```
+
 
 ## ARRAYS
 Arrays aren't POSIX complaint. They don't work with `dash`!!! `bash` and
