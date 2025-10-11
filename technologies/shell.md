@@ -194,7 +194,7 @@ wait
 
 
 ## ARRAYS
-Arrays aren't POSIX complaint. They don't work with `dash`!!! `bash` and
+Arrays aren't POSIX compliant. They don't work with `dash`!!! `bash` and
 `zsh` use different initial indices (1 and 0 respectively). `bash` and `zsh`
 don't agree on the `+=` operator either. I wouldn't recommend to use it.
 
@@ -229,4 +229,72 @@ my_array+="eee"
 
 # Appends an array.
 my_array+=("f" "g")
+```
+
+## PARAMETER EXPANSION (VARIABLE SUBSTITUTION)
+```sh
+##############################
+# Expands into a value
+
+# Expands into "value" if V is empty or unset.
+: ${V:-value}
+
+# Expands into "value" if V is unset.
+: ${V-value}
+
+# Expands into "another value" if V isn't empty or unset.
+: ${V:+another value}
+
+# Expands into "another value" if V isn't unset.
+: ${V+another value}
+
+# Expands into a length of a value even if it's unset.
+: "${#V}"
+
+
+##############################
+# Variable substitutions (expansions)
+
+# Removes the smallest prefix by the "pattern".
+: "${V#pattern}"
+
+# Removes the largest prefix by the "pattern".
+: "${V##pattern}"
+
+# Removes the smallest suffix by the "pattern".
+: "${V%pattern}"
+
+# Removes the largest suffix by the "pattern".
+: "${V%%pattern}"
+
+
+##############################
+# Assigns to a value
+
+# Assigns to "value" if V is empty or unset.
+: ${V:=value}
+
+# Assigns to "value" if V is unset.
+: ${V=value}
+
+
+##############################
+# Raises a error
+
+# Raises a error with "error message" and exits if V is empty or unset.
+: ${V:?error message}
+
+# Raises a error with "error message" and exits if V is unset.
+: ${V?error message}
+```
+
+Aren't POSIX compliant substitutions (expansions). They don't work with `dash`.
+
+```sh
+: ${V:position} # Trancates "position" characters.
+: ${V:position:length} # Gets "length" characters from the "position" character.
+: ${V/pattern/replacement} # Substitutes the first pattern to replacement.
+: ${V//pattern/replacement} # Substitutes all patterns to replacement.
+: ${V/#pattern/replacement} # Substitutes the prefix pattern to replacement.
+: ${V/%pattern/replacement} # Substitutes the suffix pattern to replacement.
 ```
