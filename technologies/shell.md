@@ -156,6 +156,37 @@ It's a cool thing to do nothing like `true`. It can be used for variable substit
 : ${VAR=:some data here}
 ```
 
+## SUBSHELLS AND GROUP COMMANDS
+```sh
+# - It's another subshell (though it might be the same process).
+# - It doesn't affect the current shell (doesn't change vars, options, fds etc).
+( command1 | command2 )
+
+# - It's the same shell.
+# - It affects the current shell (changes vars, options, fds etc).
+# - Mandatory syntax:
+#   - A space after `{`.
+#   - A semicolon before `}` (if the last command and `}` at the same line).
+{ command1 | command2; }
+```
+
+## SUBPROCESSES HANDLING
+To kill all subprocesses we should kill the group pid. This is the portable way to do so.
+```sh
+handle_exit() {
+  trap '' INT TERM
+  kill -s TERM -- -$$
+  wait
+}
+trap handle_exit INT TERM
+
+process1 &
+process2 &
+process3 &
+
+wait
+```
+
 ## ARRAYS
 Arrays aren't POSIX complaint. They don't work with `dash`!!! `bash` and
 `zsh` use different initial indices (1 and 0 respectively). `bash` and `zsh`
