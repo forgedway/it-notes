@@ -107,8 +107,8 @@ fi
 
 ```
 
-This extension allows to store new fd in a variable. It isn't POSIX (doesn't
-work with dash)!!!
+This extension allows to store new fd in a variable. It isn't POSIX. It
+doesn't work with `dash`!!!
 ```sh
 exec {data_fd}<> data.txt
 ```
@@ -139,8 +139,57 @@ EOF
 ```
 
 ## HERESTRING
-It ISN'T POSIX. It doesn't work with dash!!!
+It ISN'T POSIX. It doesn't work with `dash`!!!
 ```sh
 cat <<< "some data here"
 cat <<< $(printf "some data here")
+```
+
+## `:`
+It's a cool thing to do nothing like `true`. It can be used for variable substitution.
+```sh
+# Does nothing
+:
+: a b c
+
+# If VAR isn't set, it will be set to "some data here".
+: ${VAR=:some data here}
+```
+
+## ARRAYS
+Arrays aren't POSIX complaint. They don't work with `dash`!!! `bash` and
+`zsh` use different initial indices (1 and 0 respectively). `bash` and `zsh`
+don't agree on the `+=` operator either. I wouldn't recommend to use it.
+
+```sh
+# Creates an array.
+my_array=(a "bbbbb bbbb" ccc)
+
+# Access to all elements.
+: "${my_array[@]}"
+
+# bash: Gets the first element.
+# zsh: Gets the second element.
+: "${my_array[1]}"
+
+# Gets last element.
+: "${my_array[-1]}"
+
+# Gets length.
+: "${#my_array[@]}"
+
+# Cycles through elements.
+for v in "${my_array[@]}"; do
+  : "$v"
+done
+
+# Changes an element.
+my_array[3]="ddd"
+
+# bash: Appends data to the first element.
+# zsh: Appends an element to the end.
+my_array+="eee"
+
+# Appends an array.
+my_array+=("f" "g")
 ```
