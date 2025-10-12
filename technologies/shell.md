@@ -366,10 +366,32 @@ wait
 ```
 
 
-## `READ` LINE BY LINE
-A portable way to read line by line from stdin:
+## ITERATE OVER LINES
+A portable way to iterate over multiple lines.
 ```sh
+# Iterate over lines from stdin.
 while IFS= read -r line; do
   echo "line: $line"
 done
+
+# Iterate over lines from a variable.
+echo "$data" | while IFS= read -r line; do
+  echo "line: $line"
+done
+
+# Iterate over lines from a file.
+cat data.txt | while IFS= read -r line; do
+  echo "line: $line"
+done
+
+```
+
+## ITERATE OVER WORDS
+A portable way to iterate over words.
+```sh
+word_pattern='[^[:space:]]+'
+echo "$data" | grep -o -E "$word_pattern" | \
+  while IFS= read -r word; do
+    printf "word: %s\n" "$word"
+  done
 ```
