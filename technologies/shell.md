@@ -19,6 +19,18 @@ bash -c "printf 'a\nb\n'"
 dash -c "printf 'a\nb\n'"
 # a
 # b
+
+
+# BUT BE CAREFUL. ALWAYS USE DOUBLE QUOTES:
+V="a b"
+printf '%s\n' $V
+
+# dash or bash:
+# a
+# b
+
+# zsh:
+# a b
 ```
 
 
