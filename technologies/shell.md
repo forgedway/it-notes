@@ -170,6 +170,64 @@ It's a cool thing to do nothing like `true`. It can be used for variable substit
 ```
 
 
+## FLAGS
+These flags are POSIX and hence portable.
+```sh
+set -eu
+```
+
+`-o pipefail` isn't posix and don't work with `dash`.
+```sh
+set -euo pipefail
+```
+
+### `set -e`
+It's the errexit flag. It forces shell to exit on any error.
+```sh
+set -e
+
+# Exits
+false
+# Exits
+(false)
+
+# Won't exit
+false || (
+  # Error handling
+)
+
+# Won't exit
+(false) || (
+  # Error handling
+)
+
+##############################
+# Be careful
+
+# Won't exit
+: $(false)
+
+# Won't exit
+false | true
+```
+
+### `set -u`
+It's the nounset flag. It forces shell to exit if the script tries to expand
+a variable that isn't set.
+```sh
+set -u
+
+# Exits
+unset V
+: "${V}"
+
+# Won't exit
+V=a
+: "${V}"
+
+```
+
+
 ## ARRAYS
 Arrays aren't POSIX compliant. They don't work with `dash`!!! `bash` and
 `zsh` use different initial indices (0 and 1 respectively). `bash` and `zsh`
