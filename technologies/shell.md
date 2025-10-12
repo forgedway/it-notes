@@ -1,5 +1,6 @@
 We'll focus on different features and portability between shells.
 
+# Features
 
 ## `ECHO`
 Escape sequences are treated differently between shells:
@@ -62,15 +63,6 @@ work in `dash`.
 ```sh
 # Works in bash and zsh, but not dash.
 VAR=$'1\n2\n'
-```
-
-
-## `READ` line by line
-A portable way to read line by line from stdin:
-```sh
-while IFS= read -r line; do
-  echo "line: $line"
-done
 ```
 
 
@@ -178,24 +170,6 @@ It's a cool thing to do nothing like `true`. It can be used for variable substit
 ```
 
 
-## SUBPROCESSES HANDLING
-To kill all subprocesses we should kill the group pid. This is the portable way to do so.
-```sh
-handle_exit() {
-  trap '' INT TERM
-  kill -s TERM -- -$$
-  wait
-}
-trap handle_exit INT TERM
-
-process1 &
-process2 &
-process3 &
-
-wait
-```
-
-
 ## ARRAYS
 Arrays aren't POSIX compliant. They don't work with `dash`!!! `bash` and
 `zsh` use different initial indices (0 and 1 respectively). `bash` and `zsh`
@@ -300,4 +274,32 @@ Aren't POSIX compliant substitutions (expansions). They don't work with `dash`.
 : ${V//pattern/replacement} # Substitutes all patterns to replacement.
 : ${V/#pattern/replacement} # Substitutes the prefix pattern to replacement.
 : ${V/%pattern/replacement} # Substitutes the suffix pattern to replacement.
+```
+
+# Tips and tricks
+
+## SUBPROCESSES HANDLING
+To kill all subprocesses we should kill the group pid. This is the portable way to do so.
+```sh
+handle_exit() {
+  trap '' INT TERM
+  kill -s TERM -- -$$
+  wait
+}
+trap handle_exit INT TERM
+
+process1 &
+process2 &
+process3 &
+
+wait
+```
+
+
+## `READ` LINE BY LINE
+A portable way to read line by line from stdin:
+```sh
+while IFS= read -r line; do
+  echo "line: $line"
+done
 ```
