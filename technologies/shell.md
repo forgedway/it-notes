@@ -35,18 +35,30 @@ printf '%s\n' $V
 
 
 ## `IFS`
-`zsh` works differently from other shells, so try to avoid relying on `IFS`.
+`IFS` is the input field separator variable. It's used in different
+places like the `read` command, variable expansions, command substitutions and
+`$*`/`"$*"`/`$@` expansions.
 
 ```sh
-values="aa:bb cc:dd ee:ff"
-
 IFS=:
-for item in $values; do
-  echo $item
-done
+V="a:b c:d"
+printf "argument: %s" $V
+# dash and bash output:
+# argument: a
+# argument: b c
+# argument: d
 
-# output:
-# aa:bb cc:dd ee:ff
+# zsh output:
+# argument: a:b c:d
+```
+
+As we can see, `zsh` doesn't split words by `IFS` when it's expanding
+variables. I wouldn't recomend to relying on it, but if you want this behaviour,
+you can enable it in a portable way:
+```sh
+if [ $ZSH_VERSION ]; then
+  setopt sh_word_split
+fi
 ```
 
 To reset `IFS` in a portable way:
@@ -55,6 +67,10 @@ IFS="$(printf " \t\n"; printf x)"; IFS=${IFS%x}
 # or
 IFS="$(printf ' \t')
 "
+# or
+# This changes IFS from ' \t\n' to null, but everything works the same way.
+unset IFS
+
 
 # Alternatives (won't work):
 
@@ -394,4 +410,10 @@ echo "$data" | grep -o -E "$word_pattern" | \
   while IFS= read -r word; do
     printf "word: %s\n" "$word"
   done
+```
+
+## FROM PIPE TO AN ARGUMENT
+To pass stdin as a variable, we can use this:
+```sh
+
 ```
