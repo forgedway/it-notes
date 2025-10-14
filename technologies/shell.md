@@ -67,10 +67,10 @@ IFS="$(printf ' \t\n)"
 ```
 
 
-## `$` STRINGS
+## `$''` STRINGS
 
-`$` strings are used to expand escape sequences (`\n`, `\t`, ...). It doesn't
-work in `dash`.
+`$''` strings are used to expand escape sequences (`\n`, `\t`, ...). It's
+POSIX compliant, but it doesn't work in `dash`.
 
 ```sh
 # Works in bash and zsh, but not dash.
