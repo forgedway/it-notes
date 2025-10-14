@@ -413,7 +413,39 @@ echo "$data" | grep -o -E "$word_pattern" | \
 ```
 
 ## FROM PIPE TO AN ARGUMENT
-To pass stdin as a variable, we can use this:
+To pass data from pipe as an argument, we can use `xargs`:
 ```sh
+echo "file.txt" | xargs -n 1 touch
+```
 
+But it works only with binaries and it won't work with commands. So, the
+other way is to use shell features:
+```sh
+command1 | (command2 "$(cat)")
+
+# For example:
+validate_file() {
+  test -f "$1"
+}
+echo "file.txt" | (validate_file "$(cat)")
+
+```
+
+Be aware! we use a subshell to make the code portable:
+```sh
+echo a | echo $(cat -n)
+# bash: a
+# dash: a
+# zsh:  *stucks* (the cat waits for the input from the shell and not the pipe)
+
+echo a | ( echo b | echo $(cat) )
+# bash: b
+# dash: b
+# zsh:  a
+
+# portable behavior
+echo a | (echo $(cat))
+# bash: a
+# dash: a
+# zsh:  a
 ```
