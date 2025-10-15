@@ -20,6 +20,33 @@ wait
 ```
 
 
+## REPEAT SEVERAL TIMES
+This is the portable and stable way to repeat something several times.
+```sh
+seq 10 | while read _; do
+  :
+done
+```
+
+Bad alternatives:
+```sh
+# Isn't POSIX and won't work in dash
+for ((i=0; i<10; i++)); do
+  :
+done
+
+# Will run once with "IFS="
+for _ in $(seq 10); do
+  :
+done
+
+# Isn't POSIX and won't work in dash.
+for _ in {1..10}; do
+  :
+done
+```
+
+
 ## ITERATE OVER LINES
 A portable way to iterate over multiple lines.
 ```sh
