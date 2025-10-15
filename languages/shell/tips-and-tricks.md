@@ -125,3 +125,13 @@ f
 f() ( V=b )
 f
 ```
+
+## RUN A SCRIPT IN ANOTHER LANGUAGE
+```sh
+cat <<'EOF' | perl
+my @a = (1..5);
+for(@a){
+  print("value: $_\n");
+}
+EOF
+```
