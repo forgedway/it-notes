@@ -34,6 +34,18 @@ printf '%s\n' $V
 ```
 
 
+## `:`
+It's a cool thing to do nothing like `true`. It can be used for variable substitution.
+```sh
+# Does nothing
+:
+: a b c
+
+# If VAR isn't set, it will be set to "some data here".
+: ${VAR:=some data here}
+```
+
+
 ## `IFS`
 `IFS` is the input field separator variable. It's used in different
 places like the `read` command, variable expansions, command substitutions and
@@ -121,6 +133,49 @@ IFS=:
 : $*
 ```
 
+## SPECIAL PARAMETERS
+- `$0` expands into the name that was used to launch the script.
+```sh
+# -> "./script.sh"
+: "$0"
+```
+
+- `$-` expands into the current shell options.
+```sh
+set -eu
+# -> "ue" (in dash)
+: "$-"
+```
+
+- `$$` expands into the pid of the invoked shell. The subshells provides the
+same pid, but new shells provide new pids.
+```sh
+# -> "34990"
+: "$$"
+# -> "34990"
+(: "$$")
+# -> "34996"
+dash -c ': "$$"'
+```
+
+- `$?` expands into the exit code of the last finished command, program or
+subshell.
+```sh
+# -> "1"
+false || (: "$?")
+# -> "0"
+true && (: "$?")
+# -> "5"
+(exit 5) || (: "$?")
+```
+
+- `$!` expands into the pid of the last launched background process.
+```sh
+sleep 1 &
+# -> 35002
+PID="$!"
+```
+
 
 ## `$''` STRINGS
 
@@ -133,7 +188,7 @@ VAR=$'1\n2\n'
 ```
 
 
-## FDs:
+## FILE DESCRIPTORS
 ```sh
 # Assigns a readonly fd.
 exec 3< file.txt
@@ -207,18 +262,6 @@ It ISN'T POSIX. It doesn't work with `dash`!!!
 ```sh
 cat <<< "some data here"
 cat <<< $(printf "some data here")
-```
-
-
-## `:`
-It's a cool thing to do nothing like `true`. It can be used for variable substitution.
-```sh
-# Does nothing
-:
-: a b c
-
-# If VAR isn't set, it will be set to "some data here".
-: ${VAR:=some data here}
 ```
 
 
