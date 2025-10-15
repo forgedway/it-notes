@@ -287,6 +287,18 @@ cat <<< $(printf "some data here")
 ```
 
 
+## SOURCE VS DOT
+`source` or `.` do the same. They execute commands from a file, but with a
+little difference:
+```sh
+# It isn't POSIX and won't work with dash.
+source ./utils.sh
+
+# It's POSIX and works everywhere.
+. ./utils.sh
+```
+
+
 ## FLAGS
 These flags are POSIX and hence portable.
 ```sh
