@@ -85,3 +85,16 @@ echo a | (echo $(cat))
 # dash: a
 # zsh:  a
 ```
+
+## SUBSHELL FUNCTIONS
+We can use a subshell in function definitions and these functions won't change
+the parent shell state.
+```sh
+# Sets V
+f() { V=a; }
+f
+
+# Doesn't set V
+f() ( V=b )
+f
+```
