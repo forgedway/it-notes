@@ -83,6 +83,45 @@ IFS="$(printf ' \t\n)"
 ```
 
 
+## ARGUMENTS
+- `$1`, `$2` ... `$n` are parameters are used to access values of arguments.
+- `$#` parameter is used to access the count of arguments.
+- `$@` and `$*` parameters are used to access function/script arguments.
+
+`IFS` variable and double quotes `""` havily affect expansions.
+
+```sh
+# Sets two arguments and IFS.
+set -- "a:b" "c:d"
+IFS=:
+
+# Expands into first argument (no IFS splitting):
+# "a:b" -> "a:b"
+: "$1"
+
+# Splits the first argument by IFS:
+# "a:b" -> "a" "b"
+: $1
+
+# Expands into the number of arguments:
+# "a:b" "c:d" -> 2
+: "$#"
+
+# Expands into real arguments (no IFS splitting or combination):
+# "a:b" "c:d" -> "a:b" "c:d"
+: "$@"
+
+# Combines with the first IFS character:
+# "a:b" "c:d" -> "a:b:c:d"
+: "$*"
+
+# Splits by IFS (won't work with zsh, check IFS section):
+# "a:b" "c:d" -> "a" "b" "c" "d"
+: $@
+: $*
+```
+
+
 ## `$''` STRINGS
 
 `$''` strings are used to expand escape sequences (`\n`, `\t`, ...). It's
