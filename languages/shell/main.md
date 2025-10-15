@@ -85,7 +85,7 @@ IFS=$' \t\n'
 
 # Doesn't preserve the trailing newline
 # because of the POSIX command substitution.
-IFS="$(printf ' \t\n)"
+IFS="$(printf ' \t\n')"
 ```
 
 
