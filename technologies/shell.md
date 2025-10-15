@@ -1,36 +1,32 @@
-We'll focus on different features and portability between shells.
+This note isn't a tutorial for new to shell. It covers portability problems
+between shells and some advanced features (that I always forgets).
+
+We can find POSIX standard about shell
+[here](https://pubs.opengroup.org/onlinepubs/9799919799/) (top-left corner
+"Shell & Utilities" -> bottom-left corner "Shell Command Language").
 
 # Features
 
 ## `ECHO`
-Escape sequences are treated differently between shells:
+`echo` is used to print ONE LINE. Don't use escape sequences. They work
+differently between shells:
 ```sh
-bash -c "echo 'a\nb'"
-# a\nb
-
-dash -c "echo 'a\nb'"
-# a
-# b
+echo "one line"
+# one line
 ```
 
-So the better way is to use `printf`:
 ```sh
-bash -c "printf 'a\nb\n'"
-dash -c "printf 'a\nb\n'"
+echo 'a\nb'
+# bash: a\nb
+# dash or zsh: a
+# dash or zsh: b
+```
+
+To work with escape sequences use `printf`:
+```sh
+printf 'a\nb\n'
 # a
 # b
-
-
-# BUT BE CAREFUL. ALWAYS USE DOUBLE QUOTES:
-V="a b"
-printf '%s\n' $V
-
-# dash or bash:
-# a
-# b
-
-# zsh:
-# a b
 ```
 
 
@@ -41,32 +37,30 @@ It's a cool thing to do nothing like `true`. It can be used for variable substit
 :
 : a b c
 
-# If VAR isn't set, it will be set to "some data here".
+# If VAR isn't set or is empty, it will be set to "some data here".
 : ${VAR:=some data here}
 ```
 
 
 ## `IFS`
-`IFS` is the input field separator variable. It's used in different
-places like the `read` command, variable expansions, command substitutions and
-`$*`/`"$*"`/`$@` expansions.
+`IFS` is the input field separator variable. It's used to split or join
+fields. It's used in different places like the `read` command, variable
+expansions, command substitutions and `$*`/`"$*"`/`$@` expansions.
 
 ```sh
 IFS=:
 V="a:b c:d"
-printf "argument: %s" $V
-# dash and bash output:
-# argument: a
-# argument: b c
-# argument: d
+: $V
+# dash or bash:
+# "a:b c:d" -> "a" "b c" "d"
 
-# zsh output:
-# argument: a:b c:d
+# zsh:
+# "a:b c:d" -> "a:b c:d"
 ```
 
-As we can see, `zsh` doesn't split words by `IFS` when it's expanding
-variables. I wouldn't recomend to relying on it, but if you want this behaviour,
-you can enable it in a portable way:
+`zsh` doesn't split words by `IFS` when it's expanding variables by default. I
+wouldn't recomend to relying on it, but if you want this behaviour, you can
+enable it in a portable way:
 ```sh
 if [ $ZSH_VERSION ]; then
   setopt sh_word_split
@@ -80,7 +74,7 @@ IFS="$(printf " \t\n"; printf x)"; IFS=${IFS%x}
 IFS="$(printf ' \t')
 "
 # or
-# This changes IFS from ' \t\n' to null, but everything works the same way.
+# This doesn't restore the default value ' \t\n', but everything works the same way.
 unset IFS
 
 
@@ -95,10 +89,10 @@ IFS="$(printf ' \t\n)"
 ```
 
 
-## ARGUMENTS
-- `$1`, `$2` ... `$n` are parameters are used to access values of arguments.
+## SCRIPT / FUNCTION ARGUMENTS
+- `$1`, `$2` ... `$n` parameters are used to access values of arguments.
 - `$#` parameter is used to access the count of arguments.
-- `$@` and `$*` parameters are used to access function/script arguments.
+- `$@` and `$*` parameters are used to access all arguments.
 
 `IFS` variable and double quotes `""` havily affect expansions.
 
@@ -111,7 +105,7 @@ IFS=:
 # "a:b" -> "a:b"
 : "$1"
 
-# Splits the first argument by IFS:
+# Splits the first argument by IFS (for zsh, check IFS section):
 # "a:b" -> "a" "b"
 : $1
 
@@ -127,7 +121,7 @@ IFS=:
 # "a:b" "c:d" -> "a:b:c:d"
 : "$*"
 
-# Splits by IFS (won't work with zsh, check IFS section):
+# Splits by IFS (for zsh, check IFS section):
 # "a:b" "c:d" -> "a" "b" "c" "d"
 : $@
 : $*
@@ -205,7 +199,7 @@ exec 3<> data.txt
 # Copy another fd.
 exec 3>&1
 
-# Closes any fd.
+# Closes any fd (regardless of the type).
 exec 3>&-
 exec 3<&-
 
@@ -224,35 +218,48 @@ fi
 
 ```
 
-This extension allows to store new fd in a variable. It isn't POSIX. It
-doesn't work with `dash`!!!
+This extension allows to store new fd in a variable. It's not POSIX compliant
+and doesn't work with `dash`!!!
 ```sh
-exec {data_fd}<> data.txt
+# Saves new fd into DATA_FD variable
+exec {DATA_FD}<> data.txt
+
+# Reads from DATA_FD fd
+cat <&$DATA_FD
 ```
 
 
 ## HEREDOC
 ```sh
-
-# Multiline input
+# Multiline input.
 cat <<EOF
 some $DATA here
 EOF
 
-# Multiline input without variable expansion
+# Multiline input without variable expansion.
 cat <<'EOF'
 some $DATA here
 EOF
 
+# Multiline variable with tab supression.
+# ONLY WORKS WITH TABS, NOT SPACES (wouldn't recommend to use).
+cat <<-EOF
+	something here
+	something here
+	something here
+	EOF
+
 # Multiline variable
 V=$(cat <<EOF
-some $DATA here
+something here
+something here
+something here
 EOF
 )
 
 # Multiline fd (don't forget to close the fd).
 exec 3<<EOF
-some $DATA here
+something here
 EOF
 ```
 
@@ -267,7 +274,7 @@ cat <<< $(printf "some data here")
 
 ## SUBSHELLS AND GROUP COMMANDS
 ```sh
-# - It's another subshell (though it might be the same process).
+# - It's another subshell (though it might be the same process!).
 # - It doesn't affect the current shell (doesn't change vars, options, fds etc).
 ( command1 | command2 )
 
@@ -329,11 +336,15 @@ set -u
 
 # Exits
 unset V
-: "${V}"
+: "$V"
+
+# Won't exit
+V=
+: "$V"
 
 # Won't exit
 V=a
-: "${V}"
+: "$V"
 
 ```
 
@@ -345,35 +356,35 @@ don't agree on the `+=` operator either. I wouldn't recommend to use it.
 
 ```sh
 # Creates an array.
-my_array=(a "bbbbb bbbb" ccc)
+MY_ARRAY=(a "bbbbb bbbb" ccc)
 
 # Access to all elements.
-: "${my_array[@]}"
+: "${MY_ARRAY[@]}"
 
 # bash: Gets the second element.
 # zsh: Gets the first element.
-: "${my_array[1]}"
+: "${MY_ARRAY[1]}"
 
 # Gets last element.
-: "${my_array[-1]}"
+: "${MY_ARRAY[-1]}"
 
 # Gets length.
-: "${#my_array[@]}"
+: "${#MY_ARRAY[@]}"
 
 # Cycles through elements.
-for v in "${my_array[@]}"; do
-  : "$v"
+for V in "${MY_ARRAY[@]}"; do
+  : "$V"
 done
 
 # Changes an element.
-my_array[3]="ddd"
+MY_ARRAY[3]="ddd"
 
 # bash: Appends data to the first element.
 # zsh: Appends an element to the end of the array.
-my_array+="eee"
+MY_ARRAY+="eee"
 
 # Appends an array.
-my_array+=("f" "g")
+MY_ARRAY+=("f" "g")
 ```
 
 ## PARAMETER EXPANSION (VARIABLE SUBSTITUTION)
@@ -433,7 +444,7 @@ my_array+=("f" "g")
 : ${V?error message}
 ```
 
-Aren't POSIX compliant substitutions (expansions). They don't work with `dash`.
+These aren't POSIX compliant substitutions (expansions) and won't work with `dash`.
 
 ```sh
 : ${V:position} # Trancates "position" characters.
@@ -467,19 +478,19 @@ wait
 ## ITERATE OVER LINES
 A portable way to iterate over multiple lines.
 ```sh
-# Iterate over lines from stdin.
-while IFS= read -r line; do
-  echo "line: $line"
+# From stdin.
+while IFS= read -r LINE; do
+  : "$LINE"
 done
 
-# Iterate over lines from a variable.
-echo "$data" | while IFS= read -r line; do
-  echo "line: $line"
+# From a variable.
+echo "$DATA" | while IFS= read -r LINE; do
+  : "$LINE"
 done
 
-# Iterate over lines from a file.
-cat data.txt | while IFS= read -r line; do
-  echo "line: $line"
+# From a file.
+cat data.txt | while IFS= read -r LINE; do
+  : "$LINE"
 done
 
 ```
@@ -487,10 +498,10 @@ done
 ## ITERATE OVER WORDS
 A portable way to iterate over words.
 ```sh
-word_pattern='[^[:space:]]+'
-echo "$data" | grep -o -E "$word_pattern" | \
-  while IFS= read -r word; do
-    printf "word: %s\n" "$word"
+WORD_PATTERN='[^[:space:]]+'
+echo "$DATA" | grep -o -E "$WORD_PATTERN" | \
+  while IFS= read -r WORD; do
+    : "$WORD"
   done
 ```
 
@@ -525,7 +536,7 @@ echo a | ( echo b | echo $(cat) )
 # dash: b
 # zsh:  a
 
-# portable behavior
+# Portable behavior
 echo a | (echo $(cat))
 # bash: a
 # dash: a
