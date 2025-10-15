@@ -1,5 +1,9 @@
+# MANIFEST
+- The note consists of SOME tips and tricks that I reckon as important.
+
 ## SUBPROCESSES HANDLING
-To kill all subprocesses we should kill the group pid. This is the portable way to do so.
+To kill all subprocesses we should kill the group pid. This is the portable
+way to do so.
 ```sh
 handle_exit() {
   trap '' INT TERM

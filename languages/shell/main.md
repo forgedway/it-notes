@@ -1,5 +1,7 @@
-This note isn't a tutorial for new to shell. It covers portability problems
-between shells and some advanced features (that I always forgets).
+# MANIFEST
+- It isn't a tutorial.
+- It covers portability problems between shells.
+- It covers some advanced features (that I always forgets).
 
 We can find POSIX standard about shell
 [here](https://pubs.opengroup.org/onlinepubs/9799919799/) (top-left corner
