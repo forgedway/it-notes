@@ -21,22 +21,37 @@ wait
 
 
 ## REPEAT SEVERAL TIMES
-This is the portable and stable way to repeat something several times.
+This is a portable and stable way to repeat something several times.
 ```sh
+i=0;
+while [ $i -lt "$COUNT" ]; do
+  i=$((i + 1))
+  :
+done
+```
+
+Alternatives with drawbacks:
+```sh
+# Depends on IFS (will run once with IFS='').
+for _ in $(seq 10); do
+  :
+done
+
+# Runs in a subshell (can't change the shell environment).
+(unset IFS; for _ in $(seq 10); do
+  :
+done)
+
+# Neat, but it destroys STDIN processing.
 seq 10 | while read _; do
   :
 done
 ```
 
-Bad alternatives:
+Not portable alternatives:
 ```sh
-# Isn't POSIX and won't work in dash
+# Isn't POSIX and won't work in dash.
 for ((i=0; i<10; i++)); do
-  :
-done
-
-# Will run once with "IFS="
-for _ in $(seq 10); do
   :
 done
 
