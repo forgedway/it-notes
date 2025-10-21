@@ -23,7 +23,7 @@ wait
 ## REPEAT SEVERAL TIMES
 This is a portable and stable way to repeat something several times.
 ```sh
-i=0;
+i=0
 while [ $i -lt "$COUNT" ]; do
   i=$((i + 1))
   :
@@ -38,6 +38,7 @@ for _ in $(seq 10); do
 done
 
 # Runs in a subshell (can't change the shell environment).
+# Doesn't work in `ksh` and `ksh93`.
 (unset IFS; for _ in $(seq 10); do
   :
 done)
@@ -50,12 +51,12 @@ done
 
 Not portable alternatives:
 ```sh
-# Isn't POSIX and won't work in dash.
+# Isn't POSIX. Doesn't work with `dash`, `yash and `mksh.
 for ((i=0; i<10; i++)); do
   :
 done
 
-# Isn't POSIX and won't work in dash.
+# Isn't POSIX. Doesn't work with `dash`, `yash and `mksh.
 for _ in {1..10}; do
   :
 done
