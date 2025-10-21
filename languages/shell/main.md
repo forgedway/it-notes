@@ -17,9 +17,12 @@ echo "one line"
 
 ```sh
 echo 'a\nb'
-# bash: a\nb
-# dash or zsh: a
-# dash or zsh: b
+# bash, ksh, ksh93:
+# a\nb
+#
+# zsh, dash, yash, mksh:
+# a
+# b
 ```
 
 To work with escape sequences use `printf`:
@@ -51,7 +54,7 @@ expansions, command substitutions and `$*`/`"$*"`/`$@` expansions.
 IFS=:
 V="a:b c:d"
 : $V
-# dash or bash:
+# bash, dash, yash, ksh, mksh, ksh93:
 # "a:b c:d" -> "a" "b c" "d"
 
 # zsh:
@@ -177,7 +180,8 @@ PID="$!"
 POSIX compliant, but it doesn't work in `dash`.
 
 ```sh
-# Works in bash and zsh, but not dash.
+# Works in bash, zsh, yash, ksh, mksh, ksh93.
+# Doesn't work in dash.
 VAR=$'1\n2\n'
 ```
 
@@ -218,8 +222,9 @@ fi
 
 ```
 
-This extension allows to store new fd in a variable. It's not POSIX compliant
-and doesn't work with `dash`!!!
+This extension allows to store new fd in a variable. It's not POSIX compliant!
+It works with `bash`, `zsh`, `ksh`, `ksh93`, but doesn't work with `dash`,
+`yash`, `mksh`.
 ```sh
 # Saves new fd into DATA_FD variable
 exec {DATA_FD}<> data.txt
@@ -265,7 +270,7 @@ EOF
 
 
 ## HERESTRING
-It ISN'T POSIX. It doesn't work with `dash`!!!
+It ISN'T POSIX! It doesn't work with `dash`. But it works with everything else.
 ```sh
 cat <<< "some data here"
 cat <<< $(printf "some data here")
@@ -291,7 +296,7 @@ cat <<< $(printf "some data here")
 `source` or `.` do the same. They execute commands from a file, but with a
 little difference:
 ```sh
-# It isn't POSIX and won't work with dash.
+# It isn't POSIX and doesn't work with dash or yash.
 source ./utils.sh
 
 # It's POSIX and works everywhere.
@@ -305,7 +310,8 @@ These flags are POSIX and hence portable.
 set -eu
 ```
 
-`-o pipefail` isn't posix and don't work with `dash`.
+`-o pipefail` isn't posix and don't work with `dash`, but works with
+everything else.
 ```sh
 set -euo pipefail
 ```
@@ -362,9 +368,9 @@ V=a
 
 
 ## ARRAYS
-Arrays aren't POSIX compliant. They don't work with `dash`!!! `bash` and
-`zsh` use different initial indices (0 and 1 respectively). `bash` and `zsh`
-don't agree on the `+=` operator either. I wouldn't recommend to use it.
+Arrays aren't POSIX compliant. They don't work with `dash`!!! Other shells use
+different initial indices (0 and 1) and don't agree on the `+=` operator
+either. I wouldn't recommend to use it.
 
 ```sh
 # Creates an array.
@@ -456,7 +462,8 @@ MY_ARRAY+=("f" "g")
 : ${V?error message}
 ```
 
-These aren't POSIX compliant substitutions (expansions) and won't work with `dash`.
+These aren't POSIX compliant substitutions (expansions) and won't work with
+`dash` or `yash` (in first two cases).
 
 ```sh
 : ${V:position} # Trancates "position" characters.
