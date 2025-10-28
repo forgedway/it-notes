@@ -24,7 +24,7 @@ wait
 This is a portable and stable way to repeat something several times.
 ```sh
 i=0
-while [ $i -lt "$COUNT" ]; do
+while [ $i -lt 10 ]; do
   i=$((i + 1))
   :
 done
@@ -51,12 +51,12 @@ done
 
 Not portable alternatives:
 ```sh
-# Isn't POSIX. Doesn't work with `dash`, `yash and `mksh.
+# Isn't POSIX. Doesn't work with `dash`, `yash`, `mksh` and `busybox sh`.
 for ((i=0; i<10; i++)); do
   :
 done
 
-# Isn't POSIX. Doesn't work with `dash`, `yash and `mksh.
+# Isn't POSIX. Doesn't work with `dash`, `yash`, `mksh` and `busybox sh`.
 for _ in {1..10}; do
   :
 done
@@ -105,7 +105,7 @@ command1 | (command2 "$(cat)")
 
 # For example:
 validate_file() {
-  test -f "$1"
+  test -f "$1" || echo "NOT A FILE!"
 }
 echo "file.txt" | (validate_file "$(cat)")
 ```
