@@ -1,6 +1,8 @@
 # MANIFEST
 - It isn't a tutorial.
 - It covers portability problems between shells.
+  - I tested it with `bash`, `zsh`, `dash`, `yash`, `ksh`, `mksh`, `ksh93`,
+  `busybox sh`.
 - It covers some advanced features (that I always forgets).
 
 We can find POSIX standard about shell
@@ -17,7 +19,7 @@ echo "one line"
 
 ```sh
 echo 'a\nb'
-# bash, ksh, ksh93:
+# bash, ksh, ksh93, busybox sh:
 # a\nb
 #
 # zsh, dash, yash, mksh:
@@ -54,7 +56,7 @@ expansions, command substitutions and `$*`/`"$*"`/`$@` expansions.
 IFS=:
 V="a:b c:d"
 : $V
-# bash, dash, yash, ksh, mksh, ksh93:
+# bash, dash, yash, ksh, mksh, ksh93, busybox sh:
 # "a:b c:d" -> "a" "b c" "d"
 
 # zsh:
@@ -180,7 +182,7 @@ PID="$!"
 POSIX compliant, but it doesn't work in `dash`.
 
 ```sh
-# Works in bash, zsh, yash, ksh, mksh, ksh93.
+# Works in bash, zsh, yash, ksh, mksh, ksh93, busybox sh.
 # Doesn't work in dash.
 VAR=$'1\n2\n'
 ```
@@ -224,7 +226,7 @@ fi
 
 This extension allows to store new fd in a variable. It's not POSIX compliant!
 It works with `bash`, `zsh`, `ksh`, `ksh93`, but doesn't work with `dash`,
-`yash`, `mksh`.
+`yash`, `mksh` or `busybox sh`.
 ```sh
 # Saves new fd into DATA_FD variable
 exec {DATA_FD}<> data.txt
@@ -270,7 +272,8 @@ EOF
 
 
 ## HERESTRING
-It ISN'T POSIX! It doesn't work with `dash`. But it works with everything else.
+It ISN'T POSIX! It doesn't work with `dash` or `busybox sh`. But it works with
+everything else.
 ```sh
 cat <<< "some data here"
 cat <<< $(printf "some data here")
@@ -368,9 +371,9 @@ V=a
 
 
 ## ARRAYS
-Arrays aren't POSIX compliant. They don't work with `dash`!!! Other shells use
-different initial indices (0 and 1) and don't agree on the `+=` operator
-either. I wouldn't recommend to use it.
+Arrays aren't POSIX compliant. They don't work with `dash` or `busybox sh`!!!
+Other shells use different initial indices (0 and 1) and don't agree on the
+`+=` operator either. I wouldn't recommend to use it.
 
 ```sh
 # Creates an array.
