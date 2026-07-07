@@ -3,7 +3,7 @@
 What are an interface and a protocol in the context of communication systems
 and what's the difference between them?
 
-> **NOTE:** The term interface is considered here as hardware interface.
+> **NOTE:** The term interface is considered here as a hardware interface.
 
 **An interface** is a set of physical and logical information that facilitates
 communication. It basically deals with the physical characteristics of the
@@ -12,7 +12,7 @@ ability to send bits over a medium.
 
 **A protocol**, on the other hand, works with data bits. It structures the bits
 into data frames, handles errors in underlying communications, defines
-request-response packet sequences and etc. In other words, it doesn't deal with
+request-response packet sequences, etc. In other words, it doesn't deal with
 the physical representation of the signal and operates with data itself.
 
 Briefly:
@@ -23,9 +23,9 @@ Briefly:
 
 Unfortunately, in the real world, many interfaces define some features of a
 protocol. For example, RS-232 defines a flow control mechanism (RTS/CTS), and
-UART defines frame formad, even though both are regarded as interfaces.
+UART defines frame format, even though both are regarded as interfaces.
 
-People often use the terms "interface" or "protocol" for communication, to
+People often use the terms "interface" or "protocol" for communication to
 reference specific parts of technologies.
 
 ## Examples
